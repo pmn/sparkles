@@ -23,6 +23,7 @@ func main() {
 	r.HandleFunc("/", defaultHandler).Methods("GET")
 	r.HandleFunc("/sparkles", addSparkles).Methods("POST")
 	r.HandleFunc("/sparkles", getSparkles).Methods("GET")
+  r.HandleFunc("/sparkles/{recipient}", getSparklesForRecipient).Methods("GET")
 
 	port := os.Getenv("PORT")
 	if len(port) == 0 {

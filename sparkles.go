@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+  "github.com/gorilla/mux"
 )
 
 type Request struct {
@@ -21,5 +22,11 @@ func addSparkles(w http.ResponseWriter, h *http.Request) {
 }
 
 func getSparkles(w http.ResponseWriter, h *http.Request) {
-	fmt.Fprint(w, "Get sparkles")
+	fmt.Fprint(w, "Get top sparkles")
+}
+
+func getSparklesForRecipient(w http.ResponseWriter, h *http.Request) {
+  vars := mux.Vars(h)
+  rcpt := vars["recipient"]
+  fmt.Fprint(w, "Get sparkles for ", rcpt)
 }
