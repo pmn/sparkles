@@ -1,6 +1,7 @@
 package main
 
 import (
+  "encoding/json"
 	"fmt"
 	"net/http"
 	"time"
@@ -19,6 +20,11 @@ func defaultHandler(w http.ResponseWriter, h *http.Request) {
 
 func addSparkles(w http.ResponseWriter, h *http.Request) {
 	fmt.Fprint(w, "Add a sparkle")
+  var r Request
+  b := json.NewDecoder(h.Body)
+  b.Decode(&r)
+
+  fmt.Printf("%v", b)
 }
 
 func getSparkles(w http.ResponseWriter, h *http.Request) {
