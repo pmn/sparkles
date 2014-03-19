@@ -8,11 +8,14 @@ import (
   "github.com/gorilla/mux"
 )
 
-type Request struct {
-	SparkledBy string    `json:"sparkled_by"`
-	Recipient  string    `json:"recipient"`
-	SparkledAt time.Time `json:"sparkled_at"`
+type Sparkle struct {
+  Sparkler string `json:"sparkler"`
+  Sparklee string `json:"sparklee"`
+  Reason  string `json:"reason,omitempty"`
+  Time  time.Time `json:"time,omitempty"`
 }
+
+var sparkles []Sparkle
 
 func defaultHandler(w http.ResponseWriter, h *http.Request) {
 	fmt.Fprint(w, "Default sparkles")
@@ -20,15 +23,16 @@ func defaultHandler(w http.ResponseWriter, h *http.Request) {
 
 func addSparkles(w http.ResponseWriter, h *http.Request) {
 	fmt.Fprint(w, "Add a sparkle")
-  var r Request
+  var s Sparkle
   b := json.NewDecoder(h.Body)
-  b.Decode(&r)
+  b.Decode(&s)
 
-  fmt.Printf("%v", b)
+  sparkles = append(sparkles, s)
+  fmt.Printf("%v", sparkles)
 }
 
 func getSparkles(w http.ResponseWriter, h *http.Request) {
-	fmt.Fprint(w, "Get top sparkles")
+	fmt.Fprintf(w, "%v", sparkles)
 }
 
 func getSparklesForRecipient(w http.ResponseWriter, h *http.Request) {
