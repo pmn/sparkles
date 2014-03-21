@@ -15,7 +15,7 @@ type Sparkle struct {
 	Time     time.Time `json:"time,omitempty"`
 }
 
-var sparkles []Sparkle
+type Sparkles []Sparkle{}
 
 func defaultHandler(w http.ResponseWriter, h *http.Request) {
 	fmt.Fprint(w, "Default sparkles")
