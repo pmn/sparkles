@@ -48,7 +48,7 @@ func LoadDB() SparkleDatabase {
 	return sparkleDB
 }
 
-func (sparkledb *SparkleDatabase) AddSparkle(sparkle Sparkle) {
+func (sparkledb *SparkleDatabase) AddSparkle(sparkle Sparkle) Leader {
 	// Add a sparkle to the database
 	sparkledb.Sparkles = append(sparkledb.Sparkles, sparkle)
 	giver := Leader{Name: sparkle.Sparkler, Score: 1}
@@ -60,6 +60,7 @@ func (sparkledb *SparkleDatabase) AddSparkle(sparkle Sparkle) {
 		if v.Name == sparkle.Sparklee {
 			receiver_found = true
 			sparkledb.MostReceived[k].Score++
+			receiver.Score = sparkledb.MostReceived[k].Score
 		}
 	}
 
@@ -84,6 +85,9 @@ func (sparkledb *SparkleDatabase) AddSparkle(sparkle Sparkle) {
 
 	// After the sparkle has been added, save the data file
 	sparkledb.Save()
+
+	// Return the receiver record so that Hubot can report the users total sparkles
+	return receiver
 }
 
 type ByScore []Leader
