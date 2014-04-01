@@ -4,11 +4,13 @@ import (
 	"bytes"
 	"encoding/gob"
 	"io/ioutil"
+	"log"
 	"sort"
+	"time"
 )
 
 // HA HA, joke's on you! ENTIRE DB IS FILE!
-const filename = "sparkledb.gob"
+const filename = "sparkledb"
 
 type SparkleDatabase struct {
 	Sparkles     []Sparkle
@@ -42,7 +44,7 @@ func LoadDB() SparkleDatabase {
 	err = dec.Decode(&sparkleDB)
 
 	if err != nil {
-		panic(err)
+		log.Print("There was an error loading the sparkle database. Using a blank one.")
 	}
 
 	return sparkleDB
@@ -50,6 +52,7 @@ func LoadDB() SparkleDatabase {
 
 func (sparkledb *SparkleDatabase) AddSparkle(sparkle Sparkle) Leader {
 	// Add a sparkle to the database
+	sparkle.Time = time.Now()
 	sparkledb.Sparkles = append(sparkledb.Sparkles, sparkle)
 	giver := Leader{Name: sparkle.Sparkler, Score: 1}
 	receiver := Leader{Name: sparkle.Sparklee, Score: 1}
