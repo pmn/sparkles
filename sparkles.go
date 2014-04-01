@@ -50,13 +50,12 @@ func addSparkles(w http.ResponseWriter, h *http.Request) {
 }
 
 func getSparkles(w http.ResponseWriter, h *http.Request) {
-	fmt.Fprintf(w, "%v", db.Sparkles)
+	returnJson(db.Sparkles, w, h)
 }
 
 func getSparklesForRecipient(w http.ResponseWriter, h *http.Request) {
 	vars := mux.Vars(h)
 	rcpt := vars["recipient"]
-	fmt.Fprint(w, "Get sparkles for ", rcpt)
 	sparkles := db.SparklesForUser(rcpt)
-	fmt.Fprint(w, sparkles)
+	returnJson(sparkles, w, h)
 }
