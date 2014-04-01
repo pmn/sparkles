@@ -28,7 +28,7 @@ func main() {
 	r.HandleFunc("/sparkles/{recipient}", getSparklesForRecipient).Methods("GET")
 
 	// Load the database from file
-	db.Load()
+	db = LoadDB()
 
 	port := os.Getenv("PORT")
 	if len(port) == 0 {

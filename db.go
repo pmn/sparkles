@@ -1,5 +1,11 @@
 package main
 
+import (
+	"bytes"
+	"encoding/gob"
+	"io/ioutil"
+)
+
 // HA HA, joke's on you! ENTIRE DB IS FILE!
 const filename = "sparkledb.gob"
 
@@ -7,20 +13,46 @@ type SparkleDatabase struct {
 	Sparkles []Sparkle
 }
 
-func (db *SparkleDatabase) Save() {
+func (sparkledb *SparkleDatabase) Save() {
 	// Persist the database to file
+	var data bytes.Buffer
+	contents := gob.NewEncoder(&data)
+	err := contents.Encode(sparkledb)
+	if err != nil {
+		panic(err)
+	}
 
+	err = ioutil.WriteFile(filename, data.Bytes(), 0644)
+	if err != nil {
+		panic(err)
+	}
 }
 
-func (db *SparkleDatabase) Load() {
+func LoadDB() SparkleDatabase {
 	// Load the database from a file
+	n, err := ioutil.ReadFile(filename)
+	// Create a bytes.Buffer
+	p := bytes.NewBuffer(n)
+	dec := gob.NewDecoder(p)
+
+	var sparkleDB SparkleDatabase
+	err = dec.Decode(&sparkleDB)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return sparkleDB
 }
 
-func (db *SparkleDatabase) AddSparkle(sparkle Sparkle) {
+func (sparkledb *SparkleDatabase) AddSparkle(sparkle Sparkle) {
 	// Add a sparkle to the database
+
+	// After the sparkle has been added, save the data file
+	sparkledb.Save()
 }
 
-func (db *SparkleDatabase) TopSparkles(n int) []Sparkle {
+func (sparkledb *SparkleDatabase) TopSparkles(n int) []Sparkle {
 	// Return top n sparkles
 
 	return []Sparkle{}
