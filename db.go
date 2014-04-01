@@ -10,7 +10,9 @@ import (
 const filename = "sparkledb.gob"
 
 type SparkleDatabase struct {
-	Sparkles []Sparkle
+	Sparkles     []Sparkle
+	MostReceived []Leader
+	MostGiven    []Leader
 }
 
 func (sparkledb *SparkleDatabase) Save() {
@@ -48,22 +50,41 @@ func LoadDB() SparkleDatabase {
 func (sparkledb *SparkleDatabase) AddSparkle(sparkle Sparkle) {
 	// Add a sparkle to the database
 	sparkledb.Sparkles = append(sparkledb.Sparkles, sparkle)
+	giver := Leader{Name: sparkle.Sparkler, Score: 1}
+	receiver := Leader{Name: sparkle.Sparklee, Score: 1}
+
+	receiver_found := false
+	for k, v := range sparkledb.MostReceived {
+		if v.Name == sparkle.Sparklee {
+			receiver_found = true
+			sparkledb.MostReceived[k].Score++
+		}
+	}
+
+	if !receiver_found {
+		sparkledb.MostReceived = append(sparkledb.MostReceived, receiver)
+	}
+
+	giver_found := false
+	for k, v := range sparkledb.MostGiven {
+		if v.Name == sparkle.Sparkler {
+			giver_found = true
+			sparkledb.MostGiven[k].Score++
+		}
+	}
+
+	if !giver_found {
+		sparkledb.MostGiven = append(sparkledb.MostGiven, giver)
+	}
+
 	// After the sparkle has been added, save the data file
 	sparkledb.Save()
 }
 
 func (sparkledb *SparkleDatabase) TopUsers(n int) []Leader {
-	// Return users with the most sparkles
-	top := make(map[string]int)
-
-	// Count the top sparkled users
-	for _, v := range db.Sparkles {
-		top[v.Sparkler]++
-	}
-
 	// Get the top N leaders and return them
+	leaders := make([]Leader, n)
 
-	var leaders []Leader
 	return leaders
 }
 
