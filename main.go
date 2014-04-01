@@ -18,12 +18,17 @@ func Log(handler http.Handler) http.Handler {
 	})
 }
 
+var db SparkleDatabase
+
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", defaultHandler).Methods("GET")
 	r.HandleFunc("/sparkles", addSparkles).Methods("POST")
 	r.HandleFunc("/sparkles", getSparkles).Methods("GET")
-  r.HandleFunc("/sparkles/{recipient}", getSparklesForRecipient).Methods("GET")
+	r.HandleFunc("/sparkles/{recipient}", getSparklesForRecipient).Methods("GET")
+
+	// Load the database from file
+	db.Load()
 
 	port := os.Getenv("PORT")
 	if len(port) == 0 {

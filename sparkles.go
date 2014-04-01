@@ -15,8 +15,6 @@ type Sparkle struct {
 	Time     time.Time `json:"time,omitempty"`
 }
 
-type Sparkles []Sparkle{}
-
 func defaultHandler(w http.ResponseWriter, h *http.Request) {
 	fmt.Fprint(w, "Default sparkles")
 }
@@ -27,16 +25,18 @@ func addSparkles(w http.ResponseWriter, h *http.Request) {
 	b := json.NewDecoder(h.Body)
 	b.Decode(&s)
 
-	sparkles = append(sparkles, s)
-	fmt.Printf("%v", sparkles)
+	db.AddSparkle(s)
+	fmt.Printf("%v", db.Sparkles)
 }
 
 func getSparkles(w http.ResponseWriter, h *http.Request) {
-	fmt.Fprintf(w, "%v", sparkles)
+	fmt.Fprintf(w, "%v", db.Sparkles)
 }
 
 func getSparklesForRecipient(w http.ResponseWriter, h *http.Request) {
 	vars := mux.Vars(h)
 	rcpt := vars["recipient"]
 	fmt.Fprint(w, "Get sparkles for ", rcpt)
+	sparkles := db.SparklesForUser(rcpt)
+	fmt.Fprint(w, sparkles)
 }
