@@ -35,11 +35,14 @@ func returnJson(obj interface{}, w http.ResponseWriter, h *http.Request) {
 	fmt.Fprint(w, string(j))
 }
 
+// Placeholder in case anyone calls the root of the service.
+// Perhaps change this to 404.
 func defaultHandler(w http.ResponseWriter, h *http.Request) {
 	fmt.Fprint(w, "Default sparkles")
 }
 
-func addSparkles(w http.ResponseWriter, h *http.Request) {
+// Add a sparkle!
+func addSparkle(w http.ResponseWriter, h *http.Request) {
 	fmt.Fprint(w, "Add a sparkle")
 	var s Sparkle
 	b := json.NewDecoder(h.Body)
@@ -49,20 +52,24 @@ func addSparkles(w http.ResponseWriter, h *http.Request) {
 	returnJson(result, w, h)
 }
 
+// Get the entire data set
 func getSparkles(w http.ResponseWriter, h *http.Request) {
 	returnJson(db.Sparkles, w, h)
 }
 
+// Get the top 5 givers
 func topGivers(w http.ResponseWriter, h *http.Request) {
 	result := db.TopGivers(5)
 	returnJson(result, w, h)
 }
 
+// Get the top 5 receivers
 func topReceivers(w http.ResponseWriter, h *http.Request) {
 	result := db.TopReceivers(5)
 	returnJson(result, w, h)
 }
 
+// Get all the sparkles for someone in particular
 func getSparklesForRecipient(w http.ResponseWriter, h *http.Request) {
 	vars := mux.Vars(h)
 	rcpt := vars["recipient"]

@@ -23,7 +23,7 @@ var db SparkleDatabase
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", defaultHandler).Methods("GET")
-	r.HandleFunc("/sparkles", addSparkles).Methods("POST")
+	r.HandleFunc("/sparkles", addSparkle).Methods("POST")
 	r.HandleFunc("/sparkles", getSparkles).Methods("GET")
 	r.HandleFunc("/top/giver", topGivers).Methods("GET")
 	r.HandleFunc("/top/receiver", topReceivers).Methods("GET")
