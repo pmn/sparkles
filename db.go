@@ -99,10 +99,16 @@ func (a ByScore) Len() int           { return len(a) }
 func (a ByScore) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a ByScore) Less(i, j int) bool { return a[i].Score < a[j].Score }
 
-func (sparkledb *SparkleDatabase) TopUsers(n int) []Leader {
+func (sparkledb *SparkleDatabase) TopReceivers(n int) []Leader {
 	// Get the top N leaders and return them
-	sort.Sort(ByScore(sparkledb.MostReceived))
+	sort.Sort(sort.Reverse(ByScore(sparkledb.MostReceived)))
 	return sparkledb.MostReceived
+}
+
+func (sparkledb *SparkleDatabase) TopGivers(n int) []Leader {
+	// Get the top N leaders and return them
+	sort.Sort(sort.Reverse(ByScore(sparkledb.MostGiven)))
+	return sparkledb.MostGiven
 }
 
 func (db *SparkleDatabase) SparklesForUser(user string) []Sparkle {

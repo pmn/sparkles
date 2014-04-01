@@ -53,6 +53,16 @@ func getSparkles(w http.ResponseWriter, h *http.Request) {
 	returnJson(db.Sparkles, w, h)
 }
 
+func topGivers(w http.ResponseWriter, h *http.Request) {
+	result := db.TopGivers(5)
+	returnJson(result, w, h)
+}
+
+func topReceivers(w http.ResponseWriter, h *http.Request) {
+	result := db.TopReceivers(5)
+	returnJson(result, w, h)
+}
+
 func getSparklesForRecipient(w http.ResponseWriter, h *http.Request) {
 	vars := mux.Vars(h)
 	rcpt := vars["recipient"]
