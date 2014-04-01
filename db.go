@@ -47,18 +47,25 @@ func LoadDB() SparkleDatabase {
 
 func (sparkledb *SparkleDatabase) AddSparkle(sparkle Sparkle) {
 	// Add a sparkle to the database
-
+	sparkledb.Sparkles = append(sparkledb.Sparkles, sparkle)
 	// After the sparkle has been added, save the data file
 	sparkledb.Save()
 }
 
-func (sparkledb *SparkleDatabase) TopSparkles(n int) []Sparkle {
-	// Return top n sparkles
+func (sparkledb *SparkleDatabase) TopUsers(n int) []Sparkle {
+	// Return users with the most sparkles
 
 	return []Sparkle{}
 }
 
 func (db *SparkleDatabase) SparklesForUser(user string) []Sparkle {
 	// Return all the sparkles for <user>
-	return []Sparkle{}
+	var list []Sparkle
+	for _, v := range db.Sparkles {
+		if v.Sparklee == user {
+			list = append(list, v)
+		}
+	}
+
+	return list
 }
