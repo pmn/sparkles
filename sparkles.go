@@ -15,6 +15,11 @@ type Sparkle struct {
 	Time     time.Time `json:"time,omitempty"`
 }
 
+type Leader struct {
+	Name  string `json:"name"`
+	Score int    `json:"score"`
+}
+
 func defaultHandler(w http.ResponseWriter, h *http.Request) {
 	fmt.Fprint(w, "Default sparkles")
 }

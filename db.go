@@ -52,10 +52,19 @@ func (sparkledb *SparkleDatabase) AddSparkle(sparkle Sparkle) {
 	sparkledb.Save()
 }
 
-func (sparkledb *SparkleDatabase) TopUsers(n int) []Sparkle {
+func (sparkledb *SparkleDatabase) TopUsers(n int) []Leader {
 	// Return users with the most sparkles
+	top := make(map[string]int)
 
-	return []Sparkle{}
+	// Count the top sparkled users
+	for _, v := range db.Sparkles {
+		top[v.Sparkler]++
+	}
+
+	// Get the top N leaders and return them
+
+	var leaders []Leader
+	return leaders
 }
 
 func (db *SparkleDatabase) SparklesForUser(user string) []Sparkle {
