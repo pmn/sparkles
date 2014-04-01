@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/gob"
 	"io/ioutil"
+	"sort"
 )
 
 // HA HA, joke's on you! ENTIRE DB IS FILE!
@@ -53,6 +54,7 @@ func (sparkledb *SparkleDatabase) AddSparkle(sparkle Sparkle) {
 	giver := Leader{Name: sparkle.Sparkler, Score: 1}
 	receiver := Leader{Name: sparkle.Sparklee, Score: 1}
 
+	// Add the receiver's data
 	receiver_found := false
 	for k, v := range sparkledb.MostReceived {
 		if v.Name == sparkle.Sparklee {
@@ -61,10 +63,12 @@ func (sparkledb *SparkleDatabase) AddSparkle(sparkle Sparkle) {
 		}
 	}
 
+	// Add the receiver if not already there
 	if !receiver_found {
 		sparkledb.MostReceived = append(sparkledb.MostReceived, receiver)
 	}
 
+	// Add the giver's data
 	giver_found := false
 	for k, v := range sparkledb.MostGiven {
 		if v.Name == sparkle.Sparkler {
@@ -73,6 +77,7 @@ func (sparkledb *SparkleDatabase) AddSparkle(sparkle Sparkle) {
 		}
 	}
 
+	// Add the giver if not already there
 	if !giver_found {
 		sparkledb.MostGiven = append(sparkledb.MostGiven, giver)
 	}
@@ -81,11 +86,16 @@ func (sparkledb *SparkleDatabase) AddSparkle(sparkle Sparkle) {
 	sparkledb.Save()
 }
 
+type ByScore []Leader
+
+func (a ByScore) Len() int           { return len(a) }
+func (a ByScore) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByScore) Less(i, j int) bool { return a[i].Score < a[j].Score }
+
 func (sparkledb *SparkleDatabase) TopUsers(n int) []Leader {
 	// Get the top N leaders and return them
-	leaders := make([]Leader, n)
-
-	return leaders
+	sort.Sort(ByScore(sparkledb.MostReceived))
+	return sparkledb.MostReceived
 }
 
 func (db *SparkleDatabase) SparklesForUser(user string) []Sparkle {
