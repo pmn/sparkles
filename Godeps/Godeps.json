@@ -1,14 +1,24 @@
 {
-	"ImportPath": "sparkles",
-	"GoVersion": "go1.1.1",
+	"ImportPath": "bearded-cyril",
+	"GoVersion": "go1.2",
 	"Deps": [
 		{
 			"ImportPath": "github.com/gorilla/context",
-			"Rev": "1be7a086a5fd6440ef16fe96baeda0c78282b980"
+			"Rev": "708054d61e5a2918b9f4e9700000ee611dcf03f5"
 		},
 		{
 			"ImportPath": "github.com/gorilla/mux",
-			"Rev": "9ede152210fa25c1377d33e867cb828c19316445"
+			"Rev": "e718e932ee606838744df844eb75064959eb74bc"
+		},
+		{
+			"ImportPath": "launchpad.net/goamz/aws",
+			"Comment": "31",
+			"Rev": "gustavo@niemeyer.net-20130213123012-pea0pxzgcdw04jbi"
+		},
+		{
+			"ImportPath": "launchpad.net/goamz/s3",
+			"Comment": "31",
+			"Rev": "gustavo@niemeyer.net-20130213123012-pea0pxzgcdw04jbi"
 		}
 	]
 }

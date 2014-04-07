@@ -46,7 +46,7 @@ type Router struct {
 	namedRoutes map[string]*Route
 	// See Router.StrictSlash(). This defines the flag for new routes.
 	strictSlash bool
-	// If true, do not clear the request context after handling the request
+	// If true, do not clear the the request context after handling the request
 	KeepContext bool
 }
 
@@ -67,14 +67,6 @@ func (r *Router) Match(req *http.Request, match *RouteMatch) bool {
 func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	// Clean path to canonical form and redirect.
 	if p := cleanPath(req.URL.Path); p != req.URL.Path {
-
-		// Added 3 lines (Philip Schlump) - It was droping the query string and #whatever from query.
-		// This matches with fix in go 1.2 r.c. 4 for same problem.  Go Issue: 
-		// http://code.google.com/p/go/issues/detail?id=5252
-		url := *req.URL
-		url.Path = p
-		p = url.String()
-
 		w.Header().Set("Location", p)
 		w.WriteHeader(http.StatusMovedPermanently)
 		return
