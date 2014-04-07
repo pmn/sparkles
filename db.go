@@ -3,7 +3,8 @@ package main
 import (
 	"bytes"
 	"encoding/gob"
-	"io/ioutil"
+	"launchpad.net/goamz/aws"
+	"launchpad.net/goamz/s3"
 	"log"
 	"sort"
 	"time"
@@ -11,6 +12,7 @@ import (
 
 // HA HA, joke's on you! ENTIRE DB IS FILE!
 const filename = "sparkledb"
+const bucketName = "mister-sparkleo"
 
 type SparkleDatabase struct {
 	Sparkles     []Sparkle
@@ -27,16 +29,43 @@ func (sparkledb *SparkleDatabase) Save() {
 		panic(err)
 	}
 
-	err = ioutil.WriteFile(filename, data.Bytes(), 0644)
+	// The AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables are used.
+	auth, err := aws.EnvAuth()
 	if err != nil {
-		panic(err)
+		panic(err.Error())
+	}
+
+	// Open Bucket
+	s := s3.New(auth, aws.USEast)
+
+	// Load the database from an S3 bucket
+	bucket := s.Bucket(bucketName)
+
+	err = bucket.Put(filename, data.Bytes(), "text/plain", s3.BucketOwnerFull)
+	if err != nil {
+		panic(err.Error())
 	}
 }
 
 func LoadDB() SparkleDatabase {
-	// Load the database from a file
-	n, err := ioutil.ReadFile(filename)
+	// The AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables are used.
+	auth, err := aws.EnvAuth()
+	if err != nil {
+		panic(err.Error())
+	}
+
+	// Open Bucket
+	s := s3.New(auth, aws.USEast)
+
+	// Load the database from an S3 bucket
+	bucket := s.Bucket(bucketName)
+
 	// Create a bytes.Buffer
+	n, err := bucket.Get(filename)
+	if err != nil {
+		panic(err)
+	}
+
 	p := bytes.NewBuffer(n)
 	dec := gob.NewDecoder(p)
 
