@@ -1,1 +1,1 @@
-web: sparklies
+web: sparkles
