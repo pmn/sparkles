@@ -7,6 +7,7 @@ import (
 	"launchpad.net/goamz/s3"
 	"log"
 	"sort"
+	"strings"
 	"time"
 )
 
@@ -104,7 +105,7 @@ func (sparkledb *SparkleDatabase) AddSparkle(sparkle Sparkle) Leader {
 	// Add the giver's data
 	giver_found := false
 	for k, v := range sparkledb.MostGiven {
-		if v.Name == sparkle.Sparkler {
+		if strings.ToLower(v.Name) == strings.ToLower(sparkle.Sparkler) {
 			giver_found = true
 			sparkledb.MostGiven[k].Score++
 		}
@@ -144,7 +145,7 @@ func (db *SparkleDatabase) SparklesForUser(user string) []Sparkle {
 	// Return all the sparkles for <user>
 	var list []Sparkle
 	for _, v := range db.Sparkles {
-		if v.Sparklee == user {
+		if strings.ToLower(v.Sparklee) == strings.ToLower(user) {
 			list = append(list, v)
 		}
 	}
