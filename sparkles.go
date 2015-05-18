@@ -84,3 +84,12 @@ func renameUser(w http.ResponseWriter, h *http.Request) {
 
 	returnJson(result, w, h)
 }
+
+func fixScore(w http.ResponseWriter, h *http.Request) {
+	vars := mux.Vars(h)
+	user := vars["user"]
+
+	result := db.FixReceivedTotals(user)
+
+	returnJson(result, w, h)
+}

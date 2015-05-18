@@ -164,3 +164,22 @@ func (db *SparkleDatabase) RenameUser(from, to string) []Sparkle {
 
 	return db.Sparkles
 }
+
+func (db *SparkleDatabase) FixReceivedTotals(user string) int {
+	// Get the count
+	received_count := 0
+	for _, v := range db.Sparkles {
+		if strings.ToLower(v.Sparklee) == strings.ToLower(user) {
+			received_count++
+		}
+	}
+
+	// Find the user and set their updated count
+	for k, v := range db.MostReceived {
+		if strings.ToLower(v.Name) == strings.ToLower(user) {
+			db.MostReceived[k].Score = received_count
+		}
+	}
+
+	return received_count
+}
