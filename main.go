@@ -28,6 +28,7 @@ func main() {
 	r.HandleFunc("/top/giver", topGivers).Methods("GET")
 	r.HandleFunc("/top/receiver", topReceivers).Methods("GET")
 	r.HandleFunc("/sparkles/{recipient}", getSparklesForRecipient).Methods("GET")
+	r.HandleFunc("/rename/{from}/{to}", renameUser).Methods("POST")
 
 	// Load the database from file
 	db = LoadDB()

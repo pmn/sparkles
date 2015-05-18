@@ -152,3 +152,15 @@ func (db *SparkleDatabase) SparklesForUser(user string) []Sparkle {
 
 	return list
 }
+
+func (db *SparkleDatabase) RenameUser(from, to string) []Sparkle {
+	for k, v := range db.Sparkles {
+		if strings.ToLower(v.Sparklee) == strings.ToLower(from) {
+			db.Sparkles[k].Sparklee = to
+		}
+	}
+
+	db.Save()
+
+	return db.Sparkles
+}

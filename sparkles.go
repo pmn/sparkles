@@ -75,3 +75,12 @@ func getSparklesForRecipient(w http.ResponseWriter, h *http.Request) {
 	sparkles := db.SparklesForUser(rcpt)
 	returnJson(sparkles, w, h)
 }
+
+func renameUser(w http.ResponseWriter, h *http.Request) {
+	vars := mux.Vars(h)
+	from := vars["from"]
+	to := vars["to"]
+	result := db.RenameUser(from, to)
+
+	returnJson(result, w, h)
+}
