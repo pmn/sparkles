@@ -16,9 +16,7 @@ const filename = "sparkledb"
 const bucketName = "mister-sparkleo"
 
 type SparkleDatabase struct {
-	Sparkles     []Sparkle
-	MostReceived []Leader
-	MostGiven    []Leader
+	Sparkles []Sparkle
 }
 
 func (sparkledb *SparkleDatabase) Save() {
@@ -84,43 +82,20 @@ func (sparkledb *SparkleDatabase) AddSparkle(sparkle Sparkle) Leader {
 	// Add a sparkle to the database
 	sparkle.Time = time.Now()
 	sparkledb.Sparkles = append(sparkledb.Sparkles, sparkle)
-	giver := Leader{Name: sparkle.Sparkler, Score: 1}
-	receiver := Leader{Name: sparkle.Sparklee, Score: 1}
-
-	// Add the receiver's data
-	receiver_found := false
-	for k, v := range sparkledb.MostReceived {
-		if v.Name == sparkle.Sparklee {
-			receiver_found = true
-			sparkledb.MostReceived[k].Score++
-			receiver.Score = sparkledb.MostReceived[k].Score
-		}
-	}
-
-	// Add the receiver if not already there
-	if !receiver_found {
-		sparkledb.MostReceived = append(sparkledb.MostReceived, receiver)
-	}
-
-	// Add the giver's data
-	giver_found := false
-	for k, v := range sparkledb.MostGiven {
-		if strings.ToLower(v.Name) == strings.ToLower(sparkle.Sparkler) {
-			giver_found = true
-			sparkledb.MostGiven[k].Score++
-		}
-	}
-
-	// Add the giver if not already there
-	if !giver_found {
-		sparkledb.MostGiven = append(sparkledb.MostGiven, giver)
-	}
 
 	// After the sparkle has been added, save the data file
 	sparkledb.Save()
 
 	// Return the receiver record so that Hubot can report the users total sparkles
-	return receiver
+	receivers := sparkledb.Receivers()
+	var recipient Leader
+	for _, v := range receivers {
+		if v.Name == sparkle.Sparklee {
+			recipient = v
+		}
+	}
+
+	return recipient
 }
 
 func (s *SparkleDatabase) Givers() []Leader {
