@@ -68,6 +68,16 @@ func topReceivers(w http.ResponseWriter, h *http.Request) {
 	returnJson(result, w, h)
 }
 
+func topGiven(w http.ResponseWriter, h *http.Request) {
+	result := db.TopGiven()
+	returnJson(result, w, h)
+}
+
+func topReceived(w http.ResponseWriter, h *http.Request) {
+	result := db.TopReceived()
+	returnJson(result, w, h)
+}
+
 // Get all the sparkles for someone in particular
 func getSparklesForRecipient(w http.ResponseWriter, h *http.Request) {
 	vars := mux.Vars(h)

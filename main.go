@@ -27,6 +27,8 @@ func main() {
 	r.HandleFunc("/sparkles", getSparkles).Methods("GET")
 	r.HandleFunc("/top/giver", topGivers).Methods("GET")
 	r.HandleFunc("/top/receiver", topReceivers).Methods("GET")
+	r.HandleFunc("/most/given", topGiven).Methods("GET")
+	r.HandleFunc("/most/received", topReceived).Methods("GET")
 	r.HandleFunc("/sparkles/{recipient}", getSparklesForRecipient).Methods("GET")
 
 	// Load the database from file
