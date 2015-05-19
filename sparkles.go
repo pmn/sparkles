@@ -56,18 +56,6 @@ func getSparkles(w http.ResponseWriter, h *http.Request) {
 	returnJson(db.Sparkles, w, h)
 }
 
-// Get the top 5 givers
-func topGivers(w http.ResponseWriter, h *http.Request) {
-	result := db.TopGivers(5)
-	returnJson(result, w, h)
-}
-
-// Get the top 5 receivers
-func topReceivers(w http.ResponseWriter, h *http.Request) {
-	result := db.TopReceivers(5)
-	returnJson(result, w, h)
-}
-
 func topGiven(w http.ResponseWriter, h *http.Request) {
 	result := db.TopGiven()
 	returnJson(result, w, h)
