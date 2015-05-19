@@ -123,22 +123,52 @@ func (sparkledb *SparkleDatabase) AddSparkle(sparkle Sparkle) Leader {
 	return receiver
 }
 
+func (s *SparkleDatabase) Givers() []Leader {
+	var g = make(map[string]int)
+	for _, v := range s.Sparkles {
+		g[v.Sparkler]++
+	}
+
+	var leaders []Leader
+	for k, v := range g {
+		leader := Leader{Name: k, Score: v}
+		leaders = append(leaders, leader)
+	}
+
+	return leaders
+}
+
+func (s *SparkleDatabase) Receivers() []Leader {
+	var g = make(map[string]int)
+	for _, v := range s.Sparkles {
+		g[v.Sparklee]++
+	}
+
+	var leaders []Leader
+	for k, v := range g {
+		leader := Leader{Name: k, Score: v}
+		leaders = append(leaders, leader)
+	}
+
+	return leaders
+}
+
 type ByScore []Leader
 
 func (a ByScore) Len() int           { return len(a) }
 func (a ByScore) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a ByScore) Less(i, j int) bool { return a[i].Score < a[j].Score }
 
-func (sparkledb *SparkleDatabase) TopReceivers(n int) []Leader {
-	// Get the top N leaders and return them
-	sort.Sort(sort.Reverse(ByScore(sparkledb.MostReceived)))
-	return sparkledb.MostReceived
+func (sparkledb *SparkleDatabase) TopGiven() []Leader {
+	leaders := sparkledb.Givers()
+	sort.Sort(sort.Reverse(ByScore(leaders)))
+	return leaders
 }
 
-func (sparkledb *SparkleDatabase) TopGivers(n int) []Leader {
-	// Get the top N leaders and return them
-	sort.Sort(sort.Reverse(ByScore(sparkledb.MostGiven)))
-	return sparkledb.MostGiven
+func (sparkledb *SparkleDatabase) TopReceived() []Leader {
+	leaders := sparkledb.Receivers()
+	sort.Sort(sort.Reverse(ByScore(leaders)))
+	return leaders
 }
 
 func (db *SparkleDatabase) SparklesForUser(user string) []Sparkle {
