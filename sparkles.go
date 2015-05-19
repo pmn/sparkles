@@ -56,13 +56,17 @@ func getSparkles(w http.ResponseWriter, h *http.Request) {
 	returnJson(db.Sparkles, w, h)
 }
 
+// This only goes back 60 days
 func topGiven(w http.ResponseWriter, h *http.Request) {
-	result := db.TopGiven()
+	after_date := time.Now().AddDate(0,0,-60)
+	result := db.TopGiven(after_date)
 	returnJson(result, w, h)
 }
 
+// This only goes back 60 days
 func topReceived(w http.ResponseWriter, h *http.Request) {
-	result := db.TopReceived()
+	after_date := time.Now().AddDate(0,0,-60)
+	result := db.TopReceived(after_date)
 	returnJson(result, w, h)
 }
 

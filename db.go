@@ -87,7 +87,8 @@ func (sparkledb *SparkleDatabase) AddSparkle(sparkle Sparkle) Leader {
 	sparkledb.Save()
 
 	// Return the receiver record so that Hubot can report the users total sparkles
-	receivers := sparkledb.Receivers()
+	var t time.Time
+	receivers := sparkledb.Receivers(t)
 	var recipient Leader
 	for _, v := range receivers {
 		if v.Name == sparkle.Sparklee {
@@ -98,10 +99,12 @@ func (sparkledb *SparkleDatabase) AddSparkle(sparkle Sparkle) Leader {
 	return recipient
 }
 
-func (s *SparkleDatabase) Givers() []Leader {
+func (s *SparkleDatabase) Givers(earliest_date time.Time) []Leader {
 	var g = make(map[string]int)
 	for _, v := range s.Sparkles {
-		g[v.Sparkler]++
+		if v.Time.After(earliest_date) {
+			g[v.Sparkler]++
+		}
 	}
 
 	var leaders []Leader
@@ -113,10 +116,12 @@ func (s *SparkleDatabase) Givers() []Leader {
 	return leaders
 }
 
-func (s *SparkleDatabase) Receivers() []Leader {
+func (s *SparkleDatabase) Receivers(earliest_date time.Time) []Leader {
 	var g = make(map[string]int)
 	for _, v := range s.Sparkles {
-		g[v.Sparklee]++
+		if v.Time.After(earliest_date) {
+			g[v.Sparklee]++
+		}
 	}
 
 	var leaders []Leader
@@ -134,14 +139,14 @@ func (a ByScore) Len() int           { return len(a) }
 func (a ByScore) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a ByScore) Less(i, j int) bool { return a[i].Score < a[j].Score }
 
-func (sparkledb *SparkleDatabase) TopGiven() []Leader {
-	leaders := sparkledb.Givers()
+func (sparkledb *SparkleDatabase) TopGiven(since time.Time) []Leader {
+	leaders := sparkledb.Givers(since)
 	sort.Sort(sort.Reverse(ByScore(leaders)))
 	return leaders
 }
 
-func (sparkledb *SparkleDatabase) TopReceived() []Leader {
-	leaders := sparkledb.Receivers()
+func (sparkledb *SparkleDatabase) TopReceived(since time.Time) []Leader {
+	leaders := sparkledb.Receivers(since)
 	sort.Sort(sort.Reverse(ByScore(leaders)))
 	return leaders
 }
