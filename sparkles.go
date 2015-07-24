@@ -14,7 +14,6 @@ type Sparkle struct {
 	Sparkler string    `json:"sparkler"`
 	Sparklee string    `json:"sparklee"`
 	Reason   string    `json:"reason,omitempty"`
-	Room     string    `json:"room,omitempty"`
 	Time     time.Time `json:"time,omitempty"`
 }
 
