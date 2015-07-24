@@ -3,27 +3,30 @@ package main
 import (
 	"bytes"
 	"encoding/gob"
-	"launchpad.net/goamz/aws"
-	"launchpad.net/goamz/s3"
 	"log"
 	"sort"
 	"strings"
 	"time"
+
+	"launchpad.net/goamz/aws"
+	"launchpad.net/goamz/s3"
 )
 
 // HA HA, joke's on you! ENTIRE DB IS FILE!
 const filename = "sparkledb"
 const bucketName = "mister-sparkleo"
 
+// SparkleDatabase holds all the sparkle data
 type SparkleDatabase struct {
 	Sparkles []Sparkle
 }
 
-func (sparkledb *SparkleDatabase) Save() {
+// Save the database
+func (s *SparkleDatabase) Save() {
 	// Persist the database to file
 	var data bytes.Buffer
 	contents := gob.NewEncoder(&data)
-	err := contents.Encode(sparkledb)
+	err := contents.Encode(s)
 	if err != nil {
 		panic(err)
 	}
@@ -46,6 +49,7 @@ func (sparkledb *SparkleDatabase) Save() {
 	}
 }
 
+// LoadDB loads the SparkleDatabase from S3
 func LoadDB() SparkleDatabase {
 	// The AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables are used.
 	auth, err := aws.EnvAuth()
@@ -78,13 +82,14 @@ func LoadDB() SparkleDatabase {
 	return sparkleDB
 }
 
-func (sparkledb *SparkleDatabase) AddSparkle(sparkle Sparkle) Leader {
+// AddSparkle adds a sparkle to the database and returns a Leader record
+func (s *SparkleDatabase) AddSparkle(sparkle Sparkle) Leader {
 	// Add a sparkle to the database
 	sparkle.Time = time.Now()
-	sparkledb.Sparkles = append(sparkledb.Sparkles, sparkle)
+	s.Sparkles = append(sparkledb.Sparkles, sparkle)
 
 	// After the sparkle has been added, save the data file
-	sparkledb.Save()
+	s.Save()
 
 	// Return the receiver record so that Hubot can report the users total sparkles
 	var t time.Time
@@ -99,10 +104,11 @@ func (sparkledb *SparkleDatabase) AddSparkle(sparkle Sparkle) Leader {
 	return recipient
 }
 
-func (s *SparkleDatabase) Givers(earliest_date time.Time) []Leader {
+// Givers returns the top Leaders
+func (s *SparkleDatabase) Givers(earliestDate time.Time) []Leader {
 	var g = make(map[string]int)
 	for _, v := range s.Sparkles {
-		if v.Time.After(earliest_date) {
+		if v.Time.After(earliestDate) {
 			g[v.Sparkler]++
 		}
 	}
@@ -116,10 +122,11 @@ func (s *SparkleDatabase) Givers(earliest_date time.Time) []Leader {
 	return leaders
 }
 
-func (s *SparkleDatabase) Receivers(earliest_date time.Time) []Leader {
+// Receivers returns the top Receivers
+func (s *SparkleDatabase) Receivers(earliestDate time.Time) []Leader {
 	var g = make(map[string]int)
 	for _, v := range s.Sparkles {
-		if v.Time.After(earliest_date) {
+		if v.Time.After(earliestDate) {
 			g[v.Sparklee]++
 		}
 	}
@@ -133,28 +140,32 @@ func (s *SparkleDatabase) Receivers(earliest_date time.Time) []Leader {
 	return leaders
 }
 
+// ByScore is used for building the leaderboard
 type ByScore []Leader
 
 func (a ByScore) Len() int           { return len(a) }
 func (a ByScore) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a ByScore) Less(i, j int) bool { return a[i].Score < a[j].Score }
 
-func (sparkledb *SparkleDatabase) TopGiven(since time.Time) []Leader {
-	leaders := sparkledb.Givers(since)
+// TopGiven returns the top Givers
+func (s *SparkleDatabase) TopGiven(since time.Time) []Leader {
+	leaders := s.Givers(since)
 	sort.Sort(sort.Reverse(ByScore(leaders)))
 	return leaders
 }
 
-func (sparkledb *SparkleDatabase) TopReceived(since time.Time) []Leader {
-	leaders := sparkledb.Receivers(since)
+// TopReceived returns the top Receivers
+func (s *SparkleDatabase) TopReceived(since time.Time) []Leader {
+	leaders := s.Receivers(since)
 	sort.Sort(sort.Reverse(ByScore(leaders)))
 	return leaders
 }
 
-func (db *SparkleDatabase) SparklesForUser(user string) []Sparkle {
+// SparklesForUser returns sparkles for user <user>
+func (s *SparkleDatabase) SparklesForUser(user string) []Sparkle {
 	// Return all the sparkles for <user>
 	var list []Sparkle
-	for _, v := range db.Sparkles {
+	for _, v := range s.Sparkles {
 		if strings.ToLower(v.Sparklee) == strings.ToLower(user) {
 			list = append(list, v)
 		}
