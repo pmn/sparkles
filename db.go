@@ -38,10 +38,10 @@ func (s *SparkleDatabase) Save() {
 	}
 
 	// Open Bucket
-	s := s3.New(auth, aws.USEast)
+	s3Connection := s3.New(auth, aws.USEast)
 
 	// Load the database from an S3 bucket
-	bucket := s.Bucket(bucketName)
+	bucket := s3Connection.Bucket(bucketName)
 
 	err = bucket.Put(filename, data.Bytes(), "text/plain", s3.BucketOwnerFull)
 	if err != nil {
@@ -86,14 +86,14 @@ func LoadDB() SparkleDatabase {
 func (s *SparkleDatabase) AddSparkle(sparkle Sparkle) Leader {
 	// Add a sparkle to the database
 	sparkle.Time = time.Now()
-	s.Sparkles = append(sparkledb.Sparkles, sparkle)
+	s.Sparkles = append(s.Sparkles, sparkle)
 
 	// After the sparkle has been added, save the data file
 	s.Save()
 
 	// Return the receiver record so that Hubot can report the users total sparkles
 	var t time.Time
-	receivers := sparkledb.Receivers(t)
+	receivers := s.Receivers(t)
 	var recipient Leader
 	for _, v := range receivers {
 		if v.Name == sparkle.Sparklee {
