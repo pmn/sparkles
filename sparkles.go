@@ -31,6 +31,9 @@ func returnJSON(obj interface{}, w http.ResponseWriter, h *http.Request) {
 	// Set the content type to json
 	w.Header().Set("Content-Type", "application/json")
 
+	// CORS to allow all callers
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	j, err := json.Marshal(obj)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
