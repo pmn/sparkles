@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/gorilla/mux"
 )
 
 func Log(handler http.Handler) http.Handler {
@@ -22,13 +23,12 @@ var db SparkleDatabase
 
 func main() {
 	r := mux.NewRouter()
-	r.HandleFunc("/", defaultHandler).Methods("GET")
 	r.HandleFunc("/sparkles", addSparkle).Methods("POST")
 	r.HandleFunc("/sparkles", getSparkles).Methods("GET")
 	r.HandleFunc("/top/giver", topGiven).Methods("GET")
 	r.HandleFunc("/top/receiver", topReceived).Methods("GET")
 	r.HandleFunc("/sparkles/{recipient}", getSparklesForRecipient).Methods("GET")
-
+	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
 	// Load the database from file
 	db = LoadDB()
 
