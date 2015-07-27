@@ -84,3 +84,17 @@ func getSparklesForRecipient(w http.ResponseWriter, h *http.Request) {
 	sparkles := db.SparklesForUser(rcpt)
 	returnJSON(sparkles, w, h)
 }
+
+// Get stats for a user
+func getStatsForUser(w http.ResponseWriter, h *http.Request) {
+	vars := mux.Vars(h)
+	user := vars["user"]
+	stats := StatsForUser(user)
+	returnJSON(stats, w, h)
+}
+
+// Get the sparkle graph
+func getSparkleGraph(w http.ResponseWriter, h *http.Request) {
+	result := db.Graph()
+	returnJSON(result, w, h)
+}

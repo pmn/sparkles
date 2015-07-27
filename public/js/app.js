@@ -17,7 +17,7 @@ function getSparkles() {
   sClient = new HttpClient();
   sClient.get('/sparkles', function(response) {
     sparkles = JSON.parse(response);
-    buildSparkleGraph();
+    buildSparkleGraphEdges();
   });
 }
 
@@ -25,7 +25,7 @@ function getSparkles() {
 var edges = [];
 
 // Build a directed graph of who sparkled whom. Only edges are required.
-function buildSparkleGraph() {
+function buildSparkleGraphEdges() {
   _.forEach(sparkles, function(sparkle) {
     var idx = _.findIndex(edges, function(e) { return e.a == sparkle.sparklee && e.b == sparkle.sparkler });
     if (idx > 0) {
@@ -35,6 +35,32 @@ function buildSparkleGraph() {
     }
   })
 }
+
+function graphSparklesOverTime(s) {
+  // Graph sparkles <s> over time
+}
+
+function getStatsForUser(user) {
+  // Get stats for a user 
+}
+
+// Display for everyone:
+// Sparkles over time (line graph)
+// Groups (cluster graph)
+// Interesting stats?
+// * Likelihood someone sparkles another user after being sparkled
+// * Sparkle word cloud (minus sparkle party)
+// * Party prevalence
+
+// Display for a user:
+// * Sparkles over time (line graph)
+// * First sparkle received
+// * First sparkle given
+// * Top sparkled (given and received)
+// * Trait: more sparkles given or received, partier, popular words?
+// * Similar users
+
+
 
 function init() {
   getSparkles();
