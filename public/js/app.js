@@ -17,31 +17,24 @@ function getSparkles() {
   sClient = new HttpClient();
   sClient.get('/sparkles', function(response) {
     sparkles = JSON.parse(response);
-    buildSparkleGraphEdges();
   });
 }
 
-// Given sparkles "s", build a graph. This is called from getSparkles.
 var edges = [];
-
-// Build a directed graph of who sparkled whom. Only edges are required.
-function buildSparkleGraphEdges() {
-  _.forEach(sparkles, function(sparkle) {
-    var idx = _.findIndex(edges, function(e) { return e.a == sparkle.sparklee && e.b == sparkle.sparkler });
-    if (idx > 0) {
-      edges[idx].score++;
-    } else {
-      edges = edges.concat({"a": sparkle.sparklee, "b": sparkle.sparkler, "score": 1});
-    }
+function getGraphEdges() {
+  sClient = new HttpClient();
+  sClient.get('/graph', function(response) {
+    edges = JSON.parse(response);
   })
 }
+
 
 function graphSparklesOverTime(s) {
   // Graph sparkles <s> over time
 }
 
 function getStatsForUser(user) {
-  // Get stats for a user 
+  // Get stats for a user
 }
 
 // Display for everyone:
@@ -63,7 +56,7 @@ function getStatsForUser(user) {
 
 
 function init() {
-  getSparkles();
+  getGraphEdges();
 }
 
 init();
