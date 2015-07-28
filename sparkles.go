@@ -31,6 +31,9 @@ func returnJSON(obj interface{}, w http.ResponseWriter, h *http.Request) {
 	// Set the content type to json
 	w.Header().Set("Content-Type", "application/json")
 
+	// CORS to allow all callers
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	j, err := json.Marshal(obj)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -80,4 +83,18 @@ func getSparklesForRecipient(w http.ResponseWriter, h *http.Request) {
 	rcpt := vars["recipient"]
 	sparkles := db.SparklesForUser(rcpt)
 	returnJSON(sparkles, w, h)
+}
+
+// Get stats for a user
+func getStatsForUser(w http.ResponseWriter, h *http.Request) {
+	vars := mux.Vars(h)
+	user := vars["user"]
+	stats := StatsForUser(user)
+	returnJSON(stats, w, h)
+}
+
+// Get the sparkle graph
+func getSparkleGraph(w http.ResponseWriter, h *http.Request) {
+	result := db.Graph()
+	returnJSON(result, w, h)
 }
