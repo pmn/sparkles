@@ -20,11 +20,11 @@ function getSparkles() {
   });
 }
 
-var edges = [];
+var graph = [];
 function getGraphEdges() {
   sClient = new HttpClient();
   sClient.get('/graph', function(response) {
-    edges = JSON.parse(response);
+    graph = JSON.parse(response);
   })
 }
 
