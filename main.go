@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Log what's up
 func Log(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		remoteAddr := r.RemoteAddr
