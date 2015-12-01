@@ -98,3 +98,13 @@ func getSparkleGraph(w http.ResponseWriter, h *http.Request) {
 	result := db.Graph()
 	returnJSON(result, w, h)
 }
+
+// Migrate sparkles from one user to another
+func migrateSparkles(w http.ResponseWriter, h *http.Request) {
+	vars := mux.Vars(h)
+	from := vars["from"]
+	to := vars["to"]
+	db.MigrateSparkles(from, to)
+	updatedSparkles := db.SparklesForUser(to)
+	returnJSON(updatedSparkles, w, h)
+}

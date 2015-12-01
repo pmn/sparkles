@@ -173,3 +173,12 @@ func (s *SparkleDatabase) SparklesForUser(user string) []Sparkle {
 
 	return list
 }
+
+// MigrateSparkles moves all sparkles from <from> to <to>
+func (s *SparkleDatabase) MigrateSparkles(from, to string) {
+	for k, v := range s.Sparkles {
+		if strings.ToLower(v.Sparklee) == strings.ToLower(from) {
+			s.Sparkles[k].Sparklee = to
+		}
+	}
+}

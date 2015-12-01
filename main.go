@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Log what's up
 func Log(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		remoteAddr := r.RemoteAddr
@@ -28,6 +29,7 @@ func main() {
 	r.HandleFunc("/top/giver", topGiven).Methods("GET")
 	r.HandleFunc("/top/receiver", topReceived).Methods("GET")
 	r.HandleFunc("/sparkles/{recipient}", getSparklesForRecipient).Methods("GET")
+	// r.HandleFunc("/migrate/{from}/{to}", migrateSparkles)
 	r.HandleFunc("/graph", getSparkleGraph).Methods("GET")
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
 	// Load the database from file
