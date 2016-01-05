@@ -20,7 +20,7 @@ func Log(handler http.Handler) http.Handler {
 	})
 }
 
-var db SparkleDatabase
+var db SparkleFileDatabase
 
 func main() {
 	r := mux.NewRouter()

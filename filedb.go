@@ -16,13 +16,13 @@ import (
 const filename = "sparkledb"
 const bucketName = "mister-sparkleo"
 
-// SparkleDatabase holds all the sparkle data
-type SparkleDatabase struct {
+// SparkleFileDatabase holds all the sparkle data
+type SparkleFileDatabase struct {
 	Sparkles []Sparkle
 }
 
 // Save the database
-func (s *SparkleDatabase) Save() {
+func (s *SparkleFileDatabase) Save() {
 	// Persist the database to file
 	var data bytes.Buffer
 	contents := gob.NewEncoder(&data)
@@ -49,8 +49,8 @@ func (s *SparkleDatabase) Save() {
 	}
 }
 
-// LoadDB loads the SparkleDatabase from S3
-func LoadDB() SparkleDatabase {
+// LoadDB loads the SparkleFileDatabase from S3
+func LoadDB() SparkleFileDatabase {
 	// The AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables are used.
 	auth, err := aws.EnvAuth()
 	if err != nil {
@@ -72,7 +72,7 @@ func LoadDB() SparkleDatabase {
 	p := bytes.NewBuffer(n)
 	dec := gob.NewDecoder(p)
 
-	var sparkleDB SparkleDatabase
+	var sparkleDB SparkleFileDatabase
 	err = dec.Decode(&sparkleDB)
 
 	if err != nil {
@@ -83,7 +83,7 @@ func LoadDB() SparkleDatabase {
 }
 
 // AddSparkle adds a sparkle to the database and returns a Leader record
-func (s *SparkleDatabase) AddSparkle(sparkle Sparkle) Leader {
+func (s *SparkleFileDatabase) AddSparkle(sparkle Sparkle) Leader {
 	// Add a sparkle to the database
 	sparkle.Time = time.Now()
 	s.Sparkles = append(s.Sparkles, sparkle)
@@ -105,7 +105,7 @@ func (s *SparkleDatabase) AddSparkle(sparkle Sparkle) Leader {
 }
 
 // Givers returns the top Leaders
-func (s *SparkleDatabase) Givers(earliestDate time.Time) []Leader {
+func (s *SparkleFileDatabase) Givers(earliestDate time.Time) []Leader {
 	var g = make(map[string]int)
 	for _, v := range s.Sparkles {
 		if v.Time.After(earliestDate) {
@@ -123,7 +123,7 @@ func (s *SparkleDatabase) Givers(earliestDate time.Time) []Leader {
 }
 
 // Receivers returns the top Receivers
-func (s *SparkleDatabase) Receivers(earliestDate time.Time) []Leader {
+func (s *SparkleFileDatabase) Receivers(earliestDate time.Time) []Leader {
 	var g = make(map[string]int)
 	for _, v := range s.Sparkles {
 		if v.Time.After(earliestDate) {
@@ -148,21 +148,21 @@ func (a ByScore) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a ByScore) Less(i, j int) bool { return a[i].Score < a[j].Score }
 
 // TopGiven returns the top Givers
-func (s *SparkleDatabase) TopGiven(since time.Time) []Leader {
+func (s *SparkleFileDatabase) TopGiven(since time.Time) []Leader {
 	leaders := s.Givers(since)
 	sort.Sort(sort.Reverse(ByScore(leaders)))
 	return leaders
 }
 
 // TopReceived returns the top Receivers
-func (s *SparkleDatabase) TopReceived(since time.Time) []Leader {
+func (s *SparkleFileDatabase) TopReceived(since time.Time) []Leader {
 	leaders := s.Receivers(since)
 	sort.Sort(sort.Reverse(ByScore(leaders)))
 	return leaders
 }
 
 // SparklesForUser returns sparkles for user <user>
-func (s *SparkleDatabase) SparklesForUser(user string) []Sparkle {
+func (s *SparkleFileDatabase) SparklesForUser(user string) []Sparkle {
 	// Return all the sparkles for <user>
 	var list []Sparkle
 	for _, v := range s.Sparkles {
@@ -175,7 +175,7 @@ func (s *SparkleDatabase) SparklesForUser(user string) []Sparkle {
 }
 
 // MigrateSparkles moves all sparkles from <from> to <to>
-func (s *SparkleDatabase) MigrateSparkles(from, to string) {
+func (s *SparkleFileDatabase) MigrateSparkles(from, to string) {
 	for k, v := range s.Sparkles {
 		if strings.ToLower(v.Sparklee) == strings.ToLower(from) {
 			s.Sparkles[k].Sparklee = to
