@@ -11,6 +11,7 @@ import (
 
 // Sparkle datatype
 type Sparkle struct {
+	Id       int       `json:"id"`
 	Sparkler string    `json:"sparkler"`
 	Sparklee string    `json:"sparklee"`
 	Reason   string    `json:"reason,omitempty"`
