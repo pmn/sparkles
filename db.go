@@ -171,7 +171,12 @@ func (s *SparkleDatabase) SparklesForUser(user string) []Sparkle {
 		}
 	}
 
-	return list
+	var reversed []Sparkle
+	for i := len(list) - 1; i >= 0; i-- {
+		reversed = append(reversed, list[i])
+	}
+
+	return reversed
 }
 
 // MigrateSparkles moves all sparkles from <from> to <to>
