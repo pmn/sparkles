@@ -29,7 +29,7 @@ func main() {
 	r.HandleFunc("/top/giver", topGiven).Methods("GET")
 	r.HandleFunc("/top/receiver", topReceived).Methods("GET")
 	r.HandleFunc("/sparkles/{recipient}", getSparklesForRecipient).Methods("GET")
-	// r.HandleFunc("/migrate/{from}/{to}", migrateSparkles)
+	r.HandleFunc("/migrate/{from}/{to}", migrateSparkles)
 	r.HandleFunc("/graph", getSparkleGraph).Methods("GET")
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
 	// Load the database from file
