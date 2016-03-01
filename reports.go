@@ -52,3 +52,8 @@ func StatsForUser(user string) SparkleStats {
   var ss SparkleStats
   return ss
 }
+
+func UseComicSansEverywhere() {
+	// Everything should use comic sans, as it's the most businessy of fonts.
+	return true
+}
