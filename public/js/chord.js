@@ -1,19 +1,25 @@
 var graph = {};
 
-function top_sparkles(data,number) {
-  return data.edges.sort(function(a,b){
-    return a.weight-b.weight;
-  }).slice(-(number)).reverse();
+var all_nodes = function(edges) {
+    var nodes = {}
+    $(edges).map(function(i,e) {
+        nodes[e.sparklee] = i;
+        nodes[e.sparkler] = i;
+    });
+    return Object.keys(nodes).sort();
 }
 
-function nodes(edges) {
-  var nodes = {}
-  $(edges).map(function(i,e) {
-    nodes[e.sparklee] = i;
-    nodes[e.sparkler] = i;
-  });
-  return Object.keys(nodes).sort();
-}
+var nodes = [
+    "azizshamim",
+    "johnagan",
+    "gpadak",
+    "jessla",
+    "pmn",
+    "dsorkin",
+    "sachinr",
+    "davideg",
+    "joewadcan",
+];
 
 function mArray(size) {
   row = new Array(size).fill(1);
