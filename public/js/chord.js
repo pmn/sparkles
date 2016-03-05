@@ -1,39 +1,8 @@
-var graph = {};
-
-var all_nodes = function(edges) {
-    var nodes = {}
-    $(edges).map(function(i,e) {
-        nodes[e.sparklee] = i;
-        nodes[e.sparkler] = i;
-    });
-    return Object.keys(nodes).sort();
-}
-
-var nodes = [
-    "azizshamim",
-    "johnagan",
-    "gpadak",
-    "jessla",
-    "pmn",
-    "dsorkin",
-    "sachinr",
-    "davideg",
-    "joewadcan",
-];
-
-function mArray(size) {
-  column = new Array();
-  for (var i=0; i<size; i++) {
-      column.push(new Array(size).fill(0));
-  }
-  return column;
-}
-
-var buildChord = function (data) {
+var buildChord = function(members, matrix) {
   var chord = d3.layout.chord()
     .padding(.01)
     .sortSubgroups(d3.descending)
-    .matrix(data.matrix);
+    .matrix(matrix);
 
   // set some magic paramters to size the chord.
   var width = 960,
@@ -102,7 +71,7 @@ var buildChord = function (data) {
     var k = (d.endAngle - d.startAngle) / 2
     return [{
       angle: k + d.startAngle,
-      label: data.nodes[d.index]
+      label: members[d.index]
     }];
   }
 
@@ -117,9 +86,17 @@ var buildChord = function (data) {
   }
 }
 
+function mArray(size) {
+    column = new Array();
+    for (var i=0; i<size; i++) {
+        column.push(new Array(size).fill(0));
+    }
+    return column;
+}
+
+
 var grouped = function(edges) {
     return values = edges.reduce(function(p,c,ci,a) {
-        //c.sparkler c.sparklee c.weight
         if (!p[c.sparkler]) { p[c.sparkler] = {} };
         p[c.sparkler][c.sparklee] = c.weight;
         return p;
@@ -142,14 +119,29 @@ var matrix = function(sparkles) {
     return m2;
 };
 
-$.get('/graph.json','',function(data) {
-    data["nodes"] = nodes;
-    //console.log("Total nodes:" + data.nodes.length);
-    //console.log("Matrix size:" + Math.pow(data.nodes.length,2));
+$.get('/graph','',function(data) {
+    var all_nodes = function(){
+        var nodes = {}
+        $(data.edges).map(function(i,e) {
+            nodes[e.sparklee] = i;
+            nodes[e.sparkler] = i;
+        });
+        return Object.keys(nodes).sort();
+    };
+
+    data.nodes = [
+        "azizshamim",
+        "johnagan",
+        "gpadak",
+        "jessla",
+        "pmn",
+        "dsorkin",
+        "sachinr",
+        "davideg",
+        "joewadcan",
+    ];
+
     data["grouped"] = grouped(data.edges);
     data["matrix"] = matrix(data);
-    //console.log("Total nodes: " + data.matrix.length);
-    //console.log("Total matrix: "+ _.flatten(data.matrix).length);
-    //console.log(data);
-    buildChord(data);
-});
+    buildChord(data.nodes,data.matrix);
+},'json');
