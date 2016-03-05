@@ -22,31 +22,14 @@ var nodes = [
 ];
 
 function mArray(size) {
-  row = new Array(size).fill(1);
   column = new Array();
   for (var i=0; i<size; i++) {
-    column.push(row);
+      column.push(new Array(size).fill(0));
   }
   return column;
 }
 
-var matrix = [
-    [0,1,1,0,1,1,1,1,1,1,0,1,2],
-    [0,0,1,0,1,1,1,1,1,1,0,1,2],
-    [0,1,0,0,1,1,1,1,1,1,0,1,2],
-    [0,0,0,0,0,0,0,0,0,1,0,1,2],
-    [0,1,1,0,0,1,1,1,1,1,0,1,2],
-    [0,1,1,0,1,0,1,1,1,1,0,1,2],
-    [0,1,1,0,1,1,0,1,1,1,0,1,2],
-    [0,1,1,0,1,1,1,0,1,1,0,1,2],
-    [0,1,1,0,1,1,1,1,0,1,0,1,2],
-    [0,1,1,1,1,1,1,1,1,0,0,1,2],
-    [0,1,1,1,1,1,1,1,1,0,0,1,2],
-    [0,1,1,1,1,1,1,1,1,0,0,0,2],
-    [0,1,1,1,1,1,1,1,1,2,2,1,0]
-];
-
-function buildChord(data) {
+var buildChord = function (data) {
   var chord = d3.layout.chord()
     .padding(.01)
     .sortSubgroups(d3.descending)
