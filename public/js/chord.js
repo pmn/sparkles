@@ -117,9 +117,39 @@ var buildChord = function (data) {
   }
 }
 
-$.get('/graph','',function(data) {
-  var top = top_sparkles(data,10);
-  data["nodes"] = nodes(top);
-  data["matrix"] = matrix;
-  buildChord(data);
+var grouped = function(edges) {
+    return values = edges.reduce(function(p,c,ci,a) {
+        //c.sparkler c.sparklee c.weight
+        if (!p[c.sparkler]) { p[c.sparkler] = {} };
+        p[c.sparkler][c.sparklee] = c.weight;
+        return p;
+    },{});
+};
+
+var matrix = function(sparkles) {
+    var m2 = mArray(sparkles.nodes.length);
+    _.each(sparkles.nodes, function(sparkler,i) {
+        _.each(sparkles.nodes, function(sparklee,j) {
+            if (!sparkles.grouped[sparkler]) {
+            } else {
+                if (!sparkles.grouped[sparkler][sparklee]) {
+                } else {
+                    m2[i][j] = sparkles.grouped[sparkler][sparklee];
+                }
+            }
+        });
+    });
+    return m2;
+};
+
+$.get('/graph.json','',function(data) {
+    data["nodes"] = nodes;
+    console.log("Total nodes:" + data.nodes.length);
+    console.log("Matrix size:" + Math.pow(data.nodes.length,2));
+    data["grouped"] = grouped(data.edges);
+    data["matrix"] = matrix(data);
+    console.log("Total nodes: " + data.matrix.length);
+    console.log("Total matrix: "+ _.flatten(data.matrix).length);
+    console.log(data);
+    buildChord(data);
 });
