@@ -144,12 +144,12 @@ var matrix = function(sparkles) {
 
 $.get('/graph.json','',function(data) {
     data["nodes"] = nodes;
-    console.log("Total nodes:" + data.nodes.length);
-    console.log("Matrix size:" + Math.pow(data.nodes.length,2));
+    //console.log("Total nodes:" + data.nodes.length);
+    //console.log("Matrix size:" + Math.pow(data.nodes.length,2));
     data["grouped"] = grouped(data.edges);
     data["matrix"] = matrix(data);
-    console.log("Total nodes: " + data.matrix.length);
-    console.log("Total matrix: "+ _.flatten(data.matrix).length);
-    console.log(data);
+    //console.log("Total nodes: " + data.matrix.length);
+    //console.log("Total matrix: "+ _.flatten(data.matrix).length);
+    //console.log(data);
     buildChord(data);
 });
