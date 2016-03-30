@@ -18,7 +18,8 @@ const bucketName = "mister-sparkleo"
 
 // SparkleDatabase holds all the sparkle data
 type SparkleDatabase struct {
-	Sparkles []Sparkle
+	Sparkles   []Sparkle
+	UnSparkles []Sparkle
 }
 
 // Save the database
@@ -97,6 +98,27 @@ func (s *SparkleDatabase) AddSparkle(sparkle Sparkle) Leader {
 	var recipient Leader
 	for _, v := range receivers {
 		if v.Name == sparkle.Sparklee {
+			recipient = v
+		}
+	}
+
+	return recipient
+}
+
+// UnSparkle adds an unsparkle to the database and returns a Leader record
+func (s *SparkleDatabase) UnSparkle(unsparkle Sparkle) Leader {
+	unsparkle.Time = time.Now()
+	s.UnSparkles = append(s.UnSparkles, unsparkle)
+
+	// After the unsparkle has been added, save the data file
+	s.Save()
+
+	// Return the receiver so that Hubot can report the user's total unsparkles
+	var t time.Time
+	receivers := s.Receivers(t)
+	var recipient Leader
+	for _, v := range receivers {
+		if v.Name == unsparkle.Sparklee {
 			recipient = v
 		}
 	}

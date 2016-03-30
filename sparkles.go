@@ -58,6 +58,16 @@ func addSparkle(w http.ResponseWriter, h *http.Request) {
 	returnJSON(result, w, h)
 }
 
+// Unsparkle someone :troll:
+func unSparkle(w http.ResponseWriter, h *http.Request) {
+	var s Sparkle
+	b := json.NewDecoder(h.Body)
+	b.Decode(&s)
+
+	result := db.UnSparkle(s)
+	returnJSON(result, w, h)
+}
+
 // Get the entire data set
 func getSparkles(w http.ResponseWriter, h *http.Request) {
 	returnJSON(db.Sparkles, w, h)
