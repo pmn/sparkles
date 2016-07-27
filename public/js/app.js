@@ -57,6 +57,7 @@ function getStatsForUser(user) {
 
 function init() {
   getGraphEdges();
+  getSparkles();
 }
 
 init();
