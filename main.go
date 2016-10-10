@@ -15,7 +15,7 @@ func Log(handler http.Handler) http.Handler {
 		if len(remoteAddr) == 0 {
 			remoteAddr = r.Header.Get("x-forwarded-for")
 		}
-		log.Printf("%s %s %s", r.RemoteAddr, r.Method, r.URL)
+		log.Printf("%s %s %s", remoteAddr, r.Method, r.URL)
 		handler.ServeHTTP(w, r)
 	})
 }
@@ -29,7 +29,10 @@ func main() {
 	r.HandleFunc("/top/giver", topGiven).Methods("GET")
 	r.HandleFunc("/top/receiver", topReceived).Methods("GET")
 	r.HandleFunc("/sparkles/{recipient}", getSparklesForRecipient).Methods("GET")
-	// r.HandleFunc("/migrate/{from}/{to}", migrateSparkles)
+	adminMode := os.Getenv("SPARKLE_ADMIN_MODE")
+	if adminMode == "TRUE" {
+		r.HandleFunc("/migrate/{from}/{to}", migrateSparkles)
+	}
 	r.HandleFunc("/graph", getSparkleGraph).Methods("GET")
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
 	// Load the database from file
@@ -43,4 +46,5 @@ func main() {
 	http.Handle("/", r)
 	log.Printf("[+] Starting the sparkles app on port %s", port)
 	http.ListenAndServe(":"+port, Log(http.DefaultServeMux))
+	log.Printf("... started!")
 }
