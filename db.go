@@ -208,4 +208,6 @@ func (s *SparkleDatabase) MigrateSparkles(from, to string) {
 			s.Sparkles[k].Sparklee = to
 		}
 	}
+
+	s.Save()
 }
