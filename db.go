@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/gob"
 	"log"
+	"os"
 	"sort"
 	"strings"
 	"time"
@@ -13,8 +14,9 @@ import (
 )
 
 // HA HA, joke's on you! ENTIRE DB IS FILE!
-const filename = "sparkledb"
-const bucketName = "mister-sparkleo"
+
+var filename = os.Getenv("SPARKLE_FILENAME")     // "sparkledb"
+var bucketName = os.Getenv("SPARKLE_BUCKETNAME") // "mister-sparkleo"
 
 // SparkleDatabase holds all the sparkle data
 type SparkleDatabase struct {
